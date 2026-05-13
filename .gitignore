@@ -5,3 +5,5 @@ __pycache__/
 .env
 data/ai_quizzes.json
 data/ai_recommendations.json
+
+.claude/
