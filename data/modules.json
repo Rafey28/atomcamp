@@ -1,0 +1,604 @@
+[
+    {
+        "id": "m_ds_py",
+        "course_id": "c_ds",
+        "order": 1,
+        "title": "Python Foundations",
+        "duration_minutes": 240,
+        "advanced_id": null,
+        "content": "Variables, data types, control flow, functions, comprehensions, and object-oriented programming. Build a fluent foundation in idiomatic Python \u2014 the language used across the data stack.",
+        "objectives": [
+            "Write Pythonic code using comprehensions and unpacking",
+            "Apply OOP for reusable data tooling",
+            "Reason about mutability and references"
+        ],
+        "video_url": "/static/videos/m_ds_py.mp4"
+    },
+    {
+        "id": "m_ds_pandas",
+        "course_id": "c_ds",
+        "order": 2,
+        "title": "NumPy & Pandas",
+        "duration_minutes": 300,
+        "advanced_id": null,
+        "content": "Vectorized computation with NumPy, tabular manipulation with Pandas \u2014 joins, groupby, reshaping, and time series. The workhorses of every data role.",
+        "objectives": [
+            "Replace Python loops with vectorized operations",
+            "Master joins, groupby, and pivoting",
+            "Diagnose SettingWithCopyWarning"
+        ],
+        "video_url": "/static/videos/m_ds_pandas.mp4"
+    },
+    {
+        "id": "m_ds_viz",
+        "course_id": "c_ds",
+        "order": 3,
+        "title": "Data Visualization",
+        "duration_minutes": 180,
+        "advanced_id": null,
+        "content": "Matplotlib, Seaborn, and Plotly for analytical and presentation-grade charts. Principles of visual encoding, accessibility, and storytelling.",
+        "objectives": [
+            "Choose the right chart for the question",
+            "Apply pre-attentive attributes intentionally",
+            "Build dashboards that drive decisions"
+        ],
+        "video_url": "/static/videos/m_ds_viz.mp4"
+    },
+    {
+        "id": "m_ds_stats",
+        "course_id": "c_ds",
+        "order": 4,
+        "title": "Statistics & Probability",
+        "duration_minutes": 360,
+        "advanced_id": null,
+        "content": "Distributions, sampling, hypothesis testing, confidence intervals, and the Central Limit Theorem. The statistical literacy that separates analysts from spreadsheet operators.",
+        "objectives": [
+            "Interpret p-values without overclaiming",
+            "Design tests with sufficient power",
+            "Avoid common inferential errors"
+        ],
+        "video_url": "/static/videos/m_ds_stats.mp4"
+    },
+    {
+        "id": "m_ds_ml",
+        "course_id": "c_ds",
+        "order": 5,
+        "title": "Machine Learning Fundamentals",
+        "duration_minutes": 420,
+        "advanced_id": null,
+        "content": "Supervised vs unsupervised learning, the bias-variance tradeoff, regularization, and the scikit-learn workflow. Train, evaluate, and tune real models.",
+        "objectives": [
+            "Frame business problems as ML problems",
+            "Apply regularization and feature engineering",
+            "Diagnose under- and overfitting"
+        ]
+    },
+    {
+        "id": "m_ds_eval",
+        "course_id": "c_ds",
+        "order": 6,
+        "title": "Model Evaluation",
+        "duration_minutes": 240,
+        "advanced_id": null,
+        "content": "Cross-validation, classification metrics, ROC and PR curves, calibration, and pitfalls of accuracy. How to know your model actually works.",
+        "objectives": [
+            "Select metrics aligned to business cost",
+            "Detect data leakage",
+            "Calibrate probabilistic predictions"
+        ]
+    },
+    {
+        "id": "m_ds_dl",
+        "course_id": "c_ds",
+        "order": 7,
+        "title": "Deep Learning Intro",
+        "duration_minutes": 360,
+        "advanced_id": null,
+        "content": "Neural network mechanics, backpropagation, activation functions, and the modern training loop with PyTorch.",
+        "objectives": [
+            "Implement and train a feedforward network",
+            "Reason about vanishing/exploding gradients",
+            "Apply transfer learning"
+        ]
+    },
+    {
+        "id": "m_ai_llm",
+        "course_id": "c_genai",
+        "order": 1,
+        "title": "LLM Fundamentals",
+        "duration_minutes": 240,
+        "advanced_id": null,
+        "content": "Transformer architecture, attention, tokenization, and scaling laws. Build the mental model behind how modern LLMs actually work.",
+        "objectives": [
+            "Explain attention from first principles",
+            "Reason about context windows and KV caching",
+            "Interpret sampling parameters"
+        ],
+        "video_url": "/static/videos/m_ai_llm.mp4"
+    },
+    {
+        "id": "m_ai_prompt",
+        "course_id": "c_genai",
+        "order": 2,
+        "title": "Prompt Engineering",
+        "duration_minutes": 180,
+        "advanced_id": null,
+        "content": "System prompts, few-shot patterns, chain-of-thought, structured outputs, and the empirical art of getting reliable behavior from LLMs.",
+        "objectives": [
+            "Design prompts that generalize",
+            "Force structured outputs reliably",
+            "Defend against prompt injection"
+        ],
+        "video_url": "/static/videos/m_ai_prompt.mp4"
+    },
+    {
+        "id": "m_ai_embed",
+        "course_id": "c_genai",
+        "order": 3,
+        "title": "Embeddings & Vector Search",
+        "duration_minutes": 240,
+        "advanced_id": null,
+        "content": "Embedding models, similarity metrics, approximate nearest neighbor indexes, and hybrid search. The retrieval substrate behind every RAG system.",
+        "objectives": [
+            "Choose between dot product, cosine, and L2",
+            "Build hybrid search with BM25 + vectors",
+            "Evaluate retrieval quality"
+        ]
+    },
+    {
+        "id": "m_ai_rag",
+        "course_id": "c_genai",
+        "order": 4,
+        "title": "Retrieval-Augmented Generation",
+        "duration_minutes": 300,
+        "advanced_id": null,
+        "content": "Chunking strategies, retrieval pipelines, re-ranking, and grounding. Move from demo to production-grade RAG.",
+        "objectives": [
+            "Design chunking strategies for your domain",
+            "Apply re-ranking and query rewriting",
+            "Diagnose retrieval failures"
+        ]
+    },
+    {
+        "id": "m_ai_tools",
+        "course_id": "c_genai",
+        "order": 5,
+        "title": "Function Calling & Tool Use",
+        "duration_minutes": 240,
+        "advanced_id": null,
+        "content": "JSON schemas, tool definitions, multi-turn tool loops, and parallel calls. Turn an LLM into a reasoning interface to your systems.",
+        "objectives": [
+            "Define tools that the model uses correctly",
+            "Handle tool errors and retries",
+            "Run parallel tool calls"
+        ]
+    },
+    {
+        "id": "m_ai_agents",
+        "course_id": "c_genai",
+        "order": 6,
+        "title": "AI Agents",
+        "duration_minutes": 300,
+        "advanced_id": null,
+        "content": "Planning, memory, reflection, and multi-step autonomous workflows. ReAct, plan-and-execute, and when not to use agents.",
+        "objectives": [
+            "Decide between workflow vs agent",
+            "Add short- and long-term memory",
+            "Bound cost and runaway loops"
+        ]
+    },
+    {
+        "id": "m_ai_eval",
+        "course_id": "c_genai",
+        "order": 7,
+        "title": "Evaluation & Guardrails",
+        "duration_minutes": 240,
+        "advanced_id": null,
+        "content": "Golden datasets, regression tests, LLM-as-judge, and runtime guardrails. The discipline that turns prototypes into reliable products.",
+        "objectives": [
+            "Build an evaluation harness",
+            "Run LLM-as-judge responsibly",
+            "Layer input/output guardrails"
+        ]
+    },
+    {
+        "id": "m_web_html",
+        "course_id": "c_web",
+        "order": 1,
+        "title": "HTML & Semantic Markup",
+        "duration_minutes": 180,
+        "advanced_id": null,
+        "content": "Semantic elements, accessibility, ARIA, and the document outline. Build markup that works for screen readers, SEO, and humans.",
+        "objectives": [
+            "Write semantic HTML5",
+            "Apply ARIA where native semantics fall short",
+            "Pass a Lighthouse accessibility audit"
+        ],
+        "video_url": "/static/videos/m_web_html.mp4"
+    },
+    {
+        "id": "m_web_css",
+        "course_id": "c_web",
+        "order": 2,
+        "title": "Modern CSS",
+        "duration_minutes": 240,
+        "advanced_id": null,
+        "content": "Flexbox, Grid, custom properties, container queries, and responsive design. The modern layout toolkit without the cargo-cult.",
+        "objectives": [
+            "Choose Flexbox vs Grid intentionally",
+            "Build with custom properties and design tokens",
+            "Handle responsive layouts without media-query soup"
+        ],
+        "video_url": "/static/videos/m_web_css.mp4"
+    },
+    {
+        "id": "m_web_js",
+        "course_id": "c_web",
+        "order": 3,
+        "title": "JavaScript Essentials",
+        "duration_minutes": 300,
+        "advanced_id": null,
+        "content": "Closures, async/await, ES modules, and the event loop. The mechanics every web developer needs in their fingertips.",
+        "objectives": [
+            "Reason about scope and closure",
+            "Use async/await without race conditions",
+            "Explain the event loop and microtask queue"
+        ]
+    },
+    {
+        "id": "m_web_dom",
+        "course_id": "c_web",
+        "order": 4,
+        "title": "DOM & Browser APIs",
+        "duration_minutes": 240,
+        "advanced_id": null,
+        "content": "Event delegation, fetch, IntersectionObserver, storage APIs, and performance APIs. The browser as a platform.",
+        "objectives": [
+            "Use event delegation for performance",
+            "Debounce and throttle correctly",
+            "Pick the right storage API"
+        ]
+    },
+    {
+        "id": "m_web_flask",
+        "course_id": "c_web",
+        "order": 5,
+        "title": "Flask Backend",
+        "duration_minutes": 300,
+        "advanced_id": null,
+        "content": "Routing, blueprints, request context, templating with Jinja, and persistence with SQLAlchemy. The backend half of the stack.",
+        "objectives": [
+            "Organize Flask apps with blueprints",
+            "Handle requests safely (sessions, CSRF, errors)",
+            "Persist with SQLAlchemy without N+1 queries"
+        ]
+    },
+    {
+        "id": "m_web_rest",
+        "course_id": "c_web",
+        "order": 6,
+        "title": "REST API Design",
+        "duration_minutes": 240,
+        "advanced_id": null,
+        "content": "HTTP semantics, status codes, idempotency, versioning, pagination, and error envelopes. Design APIs that survive contact with clients.",
+        "objectives": [
+            "Apply HTTP methods correctly",
+            "Version APIs without breaking clients",
+            "Design consistent error responses"
+        ]
+    },
+    {
+        "id": "m_web_auth",
+        "course_id": "c_web",
+        "order": 7,
+        "title": "Authentication & Security",
+        "duration_minutes": 300,
+        "advanced_id": null,
+        "content": "Sessions vs tokens, OAuth 2.0, OWASP Top 10, and password storage. Don't roll your own crypto \u2014 but know what you're using.",
+        "objectives": [
+            "Implement secure session-based auth",
+            "Use OAuth 2.0 / PKCE correctly",
+            "Defend against the OWASP Top 10"
+        ]
+    },
+    {
+        "id": "m_dm_intro",
+        "course_id": "c_dm",
+        "order": 1,
+        "title": "Marketing Fundamentals",
+        "duration_minutes": 180,
+        "advanced_id": null,
+        "content": "The marketing funnel, AIDA, customer journey mapping, and unit economics. The vocabulary every marketer must own.",
+        "objectives": [
+            "Map a full-funnel customer journey",
+            "Reason about CAC and LTV",
+            "Distinguish brand vs performance objectives"
+        ],
+        "video_url": "/static/videos/m_dm_intro.mp4"
+    },
+    {
+        "id": "m_dm_seo",
+        "course_id": "c_dm",
+        "order": 2,
+        "title": "Search Engine Optimization",
+        "duration_minutes": 240,
+        "advanced_id": null,
+        "content": "On-page, off-page, technical SEO, Core Web Vitals, and EEAT. The fundamentals of organic search visibility in 2026.",
+        "objectives": [
+            "Run an SEO site audit",
+            "Optimize Core Web Vitals",
+            "Build link-worthy content"
+        ],
+        "video_url": "/static/videos/m_dm_seo.mp4"
+    },
+    {
+        "id": "m_dm_content",
+        "course_id": "c_dm",
+        "order": 3,
+        "title": "Content Marketing",
+        "duration_minutes": 180,
+        "advanced_id": null,
+        "content": "Pillar pages, topic clusters, the skyscraper technique, and content distribution. Content that ranks, converts, and scales.",
+        "objectives": [
+            "Design pillar\u2013cluster content architectures",
+            "Repurpose content across channels",
+            "Audit and prune content portfolios"
+        ]
+    },
+    {
+        "id": "m_dm_paid",
+        "course_id": "c_dm",
+        "order": 4,
+        "title": "Paid Advertising",
+        "duration_minutes": 300,
+        "advanced_id": null,
+        "content": "Google Ads, Meta Ads, attribution, ROAS, and bid strategies. Profitable paid media is engineered, not stumbled into.",
+        "objectives": [
+            "Structure Google Ads accounts that scale",
+            "Choose bid strategies by objective",
+            "Diagnose Quality Score issues"
+        ]
+    },
+    {
+        "id": "m_dm_social",
+        "course_id": "c_dm",
+        "order": 5,
+        "title": "Social Media Strategy",
+        "duration_minutes": 180,
+        "advanced_id": null,
+        "content": "Platform mechanics, the algorithm game, creator economy, and community building. Beyond posting and hoping.",
+        "objectives": [
+            "Pick channels using ICP-driven logic",
+            "Optimize for platform-native formats",
+            "Measure social ROI rigorously"
+        ]
+    },
+    {
+        "id": "m_dm_email",
+        "course_id": "c_dm",
+        "order": 6,
+        "title": "Email Marketing",
+        "duration_minutes": 180,
+        "advanced_id": null,
+        "content": "List building, segmentation, deliverability, and lifecycle automations. Still the highest-ROI channel \u2014 when done right.",
+        "objectives": [
+            "Design lifecycle automation flows",
+            "Manage deliverability and reputation",
+            "Move beyond open-rate vanity metrics"
+        ]
+    },
+    {
+        "id": "m_dm_analytics",
+        "course_id": "c_dm",
+        "order": 7,
+        "title": "Marketing Analytics",
+        "duration_minutes": 240,
+        "advanced_id": null,
+        "content": "GA4, UTMs, attribution models, and incrementality testing. Move from clicks-and-impressions to incremental revenue.",
+        "objectives": [
+            "Instrument GA4 with event-based tracking",
+            "Compare attribution models honestly",
+            "Design incrementality tests"
+        ]
+    },
+    {
+        "id": "m_pm_think",
+        "course_id": "c_pm",
+        "order": 1,
+        "title": "Product Thinking",
+        "duration_minutes": 180,
+        "advanced_id": null,
+        "content": "Jobs-to-be-done, opportunity sizing, and outcome-over-output thinking. The mental models that separate PMs from project managers.",
+        "objectives": [
+            "Frame problems using JTBD",
+            "Size opportunities defensibly",
+            "Distinguish outcomes from outputs"
+        ],
+        "video_url": "/static/videos/m_pm_think.mp4"
+    },
+    {
+        "id": "m_pm_research",
+        "course_id": "c_pm",
+        "order": 2,
+        "title": "User Research",
+        "duration_minutes": 240,
+        "advanced_id": null,
+        "content": "Interviews, surveys, usability testing, and synthesis. Generate insight that survives leadership scrutiny.",
+        "objectives": [
+            "Run interviews that uncover real needs",
+            "Design surveys that don't lie",
+            "Synthesize qualitative data rigorously"
+        ],
+        "video_url": "/static/videos/m_pm_research.mp4"
+    },
+    {
+        "id": "m_pm_road",
+        "course_id": "c_pm",
+        "order": 3,
+        "title": "Roadmapping & Prioritization",
+        "duration_minutes": 180,
+        "advanced_id": null,
+        "content": "RICE, MoSCoW, Kano, now-next-later, and stakeholder alignment. Frameworks that make trade-offs explicit.",
+        "objectives": [
+            "Apply RICE under uncertainty",
+            "Build now-next-later roadmaps",
+            "Align stakeholders without compromise paralysis"
+        ]
+    },
+    {
+        "id": "m_pm_prd",
+        "course_id": "c_pm",
+        "order": 4,
+        "title": "Requirements & PRDs",
+        "duration_minutes": 240,
+        "advanced_id": null,
+        "content": "User stories, acceptance criteria in Given-When-Then, and non-functional requirements. Specs engineers can build from.",
+        "objectives": [
+            "Write user stories with INVEST criteria",
+            "Author testable acceptance criteria",
+            "Capture non-functional requirements"
+        ]
+    },
+    {
+        "id": "m_pm_metrics",
+        "course_id": "c_pm",
+        "order": 5,
+        "title": "Product Metrics",
+        "duration_minutes": 180,
+        "advanced_id": null,
+        "content": "AARRR, North Star Metric, leading vs lagging indicators, and the trap of vanity metrics.",
+        "objectives": [
+            "Define a defensible North Star",
+            "Distinguish leading from lagging metrics",
+            "Avoid vanity metric traps"
+        ]
+    },
+    {
+        "id": "m_pm_exp",
+        "course_id": "c_pm",
+        "order": 6,
+        "title": "Experimentation",
+        "duration_minutes": 240,
+        "advanced_id": null,
+        "content": "A/B test design, MDE, power, multiple testing, and reading results honestly. Where most PM-led tests go wrong \u2014 and how not to.",
+        "objectives": [
+            "Design tests with adequate power",
+            "Avoid peeking and multiple-testing traps",
+            "Read results without overclaiming"
+        ]
+    },
+    {
+        "id": "m_pm_launch",
+        "course_id": "c_pm",
+        "order": 7,
+        "title": "Launch & GTM",
+        "duration_minutes": 180,
+        "advanced_id": null,
+        "content": "Positioning, beta strategies, launch tiers, and rollout safety. Launches that move the needle, not just the press release.",
+        "objectives": [
+            "Write a positioning statement that focuses execution",
+            "Choose launch tiers by risk",
+            "Run safe rollouts with feature flags"
+        ]
+    },
+    {
+        "id": "m_da_excel",
+        "course_id": "c_da",
+        "order": 1,
+        "title": "Excel for Analytics",
+        "duration_minutes": 180,
+        "advanced_id": null,
+        "content": "Formulas, lookups, pivot tables, and Power Query. The analytics tool that's still on every business user's desktop.",
+        "objectives": [
+            "Replace VLOOKUP with INDEX-MATCH / XLOOKUP",
+            "Build pivot tables for ad-hoc analysis",
+            "Shape data with Power Query"
+        ],
+        "video_url": "/static/videos/m_da_excel.mp4"
+    },
+    {
+        "id": "m_da_sql1",
+        "course_id": "c_da",
+        "order": 2,
+        "title": "SQL Fundamentals",
+        "duration_minutes": 300,
+        "advanced_id": "m_da_sql2",
+        "content": "SELECT, JOINs, GROUP BY, subqueries, and the SQL execution order. The lingua franca of data analytics.",
+        "objectives": [
+            "Write correct multi-table queries",
+            "Reason about JOIN cardinality",
+            "Avoid NULL-handling pitfalls"
+        ],
+        "video_url": "/static/videos/m_da_sql1.mp4"
+    },
+    {
+        "id": "m_da_sql2",
+        "course_id": "c_da",
+        "order": 3,
+        "title": "SQL Advanced",
+        "duration_minutes": 300,
+        "advanced_id": null,
+        "content": "Window functions, CTEs, recursive queries, query optimization, and EXPLAIN. Where junior SQL becomes senior SQL.",
+        "objectives": [
+            "Apply window functions to ranking and time-series problems",
+            "Refactor with CTEs",
+            "Read query plans"
+        ]
+    },
+    {
+        "id": "m_da_bi",
+        "course_id": "c_da",
+        "order": 4,
+        "title": "Power BI & Tableau",
+        "duration_minutes": 300,
+        "advanced_id": null,
+        "content": "Data modeling, star schemas, DAX measures, and dashboard design. From query results to executive-grade reports.",
+        "objectives": [
+            "Design star schemas",
+            "Write DAX measures that aggregate correctly",
+            "Build dashboards that drive decisions"
+        ]
+    },
+    {
+        "id": "m_da_story",
+        "course_id": "c_da",
+        "order": 5,
+        "title": "Data Storytelling",
+        "duration_minutes": 180,
+        "advanced_id": null,
+        "content": "Chart selection, narrative structure, audience adaptation, and the executive summary. Insight is wasted without communication.",
+        "objectives": [
+            "Match charts to questions",
+            "Structure a data narrative",
+            "Write executive summaries that get read"
+        ]
+    },
+    {
+        "id": "m_da_ab",
+        "course_id": "c_da",
+        "order": 6,
+        "title": "A/B Testing for Analysts",
+        "duration_minutes": 240,
+        "advanced_id": null,
+        "content": "Test design, sample size, SRM detection, segment analysis, and the multiple-testing problem. Defensible experimentation.",
+        "objectives": [
+            "Power a test before launch",
+            "Detect SRM and bucket leakage",
+            "Interpret segmented results responsibly"
+        ]
+    },
+    {
+        "id": "m_da_biz",
+        "course_id": "c_da",
+        "order": 7,
+        "title": "Business Acumen for Analysts",
+        "duration_minutes": 180,
+        "advanced_id": null,
+        "content": "Unit economics, financial statements, KPIs by function, and the language of executives.",
+        "objectives": [
+            "Read a P&L statement",
+            "Pick KPIs aligned to function",
+            "Speak to executives in their language"
+        ]
+    }
+]

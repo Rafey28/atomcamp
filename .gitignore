@@ -1,0 +1,7 @@
+config.py
+__pycache__/
+*.pyc
+.venv/
+.env
+data/ai_quizzes.json
+data/ai_recommendations.json

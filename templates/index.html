@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="hero">
+    <span class="hero-eyebrow">Adaptive learning, designed for outcomes</span>
+    <h1>Learn what matters. <br><span class="grad">Skip what doesn't.</span></h1>
+    <p class="lead">
+        An adaptive LMS that personalises every learner's journey — from onboarding diagnostics to
+        course completion — while giving instructors the intelligence to act before students fall behind.
+    </p>
+    <div class="hero-actions">
+        <a href="{{ url_for('register') }}" class="btn-primary lg">Start learning</a>
+        <a href="{{ url_for('catalogue') }}" class="btn-outline lg">Browse programs</a>
+    </div>
+</section>
+
+<section class="features">
+    <div class="feature">
+        <div class="icon">◆</div>
+        <h3>Personalised paths</h3>
+        <p>Goals, background, and skill level drive a recommendation engine tuned to each learner's trajectory.</p>
+    </div>
+    <div class="feature">
+        <div class="icon">↗</div>
+        <h3>Adaptive progression</h3>
+        <p>Score below 60 — revisit. Above 90 — skip ahead to advanced material. The system meets you where you are.</p>
+    </div>
+    <div class="feature">
+        <div class="icon">◎</div>
+        <h3>Instructor intelligence</h3>
+        <p>At-risk detection, module difficulty analytics, and engagement metrics — every signal an instructor needs.</p>
+    </div>
+    <div class="feature">
+        <div class="icon">□</div>
+        <h3>Six bootcamps</h3>
+        <p>Data Science, Generative AI, Web Dev, Digital Marketing, Product Management, and Data Analytics.</p>
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,215 @@
+{% extends "base.html" %}
+{% block content %}
+
+{# ── XP / Level Bar ───────────────────────────────────────────── #}
+{% if xp %}
+<div class="xp-bar-wrap">
+    <div class="xp-level-badge">
+        <span>L{{ xp.level }}</span>
+        <small>{{ xp.level_name }}</small>
+    </div>
+    <div class="xp-info">
+        <h4>{{ user.name.split(' ')[0] }}'s Learning Journey</h4>
+        <p>Goal: <strong>{{ user.goal }}</strong> · {{ user.skill_level|capitalize }} · {{ user.time_commitment }} hrs/week</p>
+        <div class="xp-track">
+            <div class="xp-fill" id="xp-fill" style="width: 0%" data-pct="{{ xp.pct }}"></div>
+        </div>
+    </div>
+    <div class="xp-total">
+        <strong>{{ xp.total }} XP</strong><br>
+        <span style="font-size:0.72rem;">{{ xp.xp_in_level }} / {{ xp.xp_to_next }} to next level</span>
+    </div>
+    <a href="{{ url_for('catalogue') }}" class="btn-outline sm">Browse programs</a>
+</div>
+{% endif %}
+
+{# ── Learning Journey Map ─────────────────────────────────────── #}
+{% if path %}
+<section class="journey-section">
+    <h3>Your learning journey</h3>
+
+    {% for item in path %}
+    <div style="background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.5rem; margin-bottom: 1.25rem; overflow: hidden;">
+
+        {# Course header row #}
+        <div class="journey-course-header">
+            <div>
+                <span class="tag" style="margin-bottom: 0.4rem; display: inline-flex;">{{ item.course.track }}</span>
+                <h4>{{ item.course.title }}</h4>
+            </div>
+            <div style="display: flex; align-items: center; gap: 1.25rem;">
+                {# Circular progress ring #}
+                <div style="text-align: center;">
+                    <svg class="ring" width="64" height="64" viewBox="0 0 64 64">
+                        <circle class="ring-track" cx="32" cy="32" r="26"/>
+                        <circle class="ring-fill journey-ring" cx="32" cy="32" r="26"
+                            data-pct="{{ item.completion }}"
+                            style="stroke-dasharray: 163.4; stroke-dashoffset: 163.4;
+                                   stroke: {% if item.completion == 100 %}#22c55e{% elif item.completion >= 60 %}#4f46e5{% else %}#f97316{% endif %};"/>
+                        <text x="32" y="37" text-anchor="middle" class="ring-text" style="font-size:11px;">{{ item.completion }}%</text>
+                    </svg>
+                    <div style="font-size: 0.65rem; color: var(--muted); margin-top: 0.2rem;">Complete</div>
+                </div>
+                <div style="display: flex; flex-direction: column; gap: 0.4rem;">
+                    <a href="{{ url_for('course', course_id=item.course.id) }}" class="btn-primary sm">Open course</a>
+                    <form method="POST" action="{{ url_for('unenroll', enrollment_id=item.enrollment_id) }}"
+                          onsubmit="return confirm('Unenroll from {{ item.course.title }}?');">
+                        <button type="submit" class="btn-ghost danger sm" style="width:100%;">Unenroll</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        {# Journey map nodes #}
+        <div class="journey-track" style="margin: 1rem 0 0.25rem;">
+            {% for node in item.module_nodes %}
+            {% if not loop.first %}
+            <div class="journey-connector-wrap">
+                <div class="journey-connector {{ node.state if node.state in ['completed','failed'] else '' }}"></div>
+            </div>
+            {% endif %}
+            <div class="journey-node-wrap">
+                <a href="{{ url_for('module', module_id=node.module.id) }}"
+                   class="journey-node {{ node.state }}"
+                   title="{{ node.module.title }}{% if node.progress %} — {{ node.progress.last_score }}%{% endif %}">
+                    {% if node.state == 'completed' %}✓
+                    {% elif node.state == 'failed' %}✗
+                    {% elif node.state == 'current' %}▶
+                    {% else %}{{ node.module.order }}{% endif %}
+                </a>
+                <div class="journey-label">{{ node.module.title[:18] }}{% if node.module.title|length > 18 %}…{% endif %}</div>
+                {% if node.progress %}
+                <div class="journey-score {{ 'fail' if node.progress.last_score < 60 }}">{{ node.progress.last_score }}%</div>
+                {% endif %}
+            </div>
+            {% endfor %}
+
+            {% if item.next_course %}
+            <div class="journey-connector-wrap">
+                <div class="journey-connector completed"></div>
+            </div>
+            <div class="journey-node-wrap">
+                <a href="{{ url_for('suggested_course', course_id=item.next_course.next_course_id) }}"
+                   class="journey-node"
+                   style="background: linear-gradient(135deg,#4f46e5,#7c3aed); border-color: #4f46e5; color: #fff; font-size: 1rem;"
+                   title="AI Recommended: {{ item.next_course.title }}">★</a>
+                <div class="journey-label" style="color: #4f46e5; font-weight: 600;">AI Pick</div>
+            </div>
+            {% endif %}
+        </div>
+
+        {# Recommendation strip #}
+        {% if item.next_course %}
+        <div style="margin-top: 1rem; background: linear-gradient(135deg, #eff6ff, #f5f3ff); border: 1px solid #c7d2fe; border-radius: var(--radius-sm); padding: 1rem 1.25rem; display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap;">
+            <div>
+                <div style="font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; color: #4f46e5; margin-bottom: 0.3rem;">AI recommends your next step</div>
+                <div style="font-weight: 600; font-size: 0.95rem;">{{ item.next_course.title }}</div>
+                <div style="font-size: 0.8rem; color: var(--muted); margin-top: 0.2rem;">{{ item.next_course.rationale[:120] }}{% if item.next_course.rationale|length > 120 %}…{% endif %}</div>
+            </div>
+            <a href="{{ url_for('suggested_course', course_id=item.next_course.next_course_id) }}"
+               class="btn-primary" style="flex-shrink: 0;">View course →</a>
+        </div>
+        {% elif item.recommendation.action != 'complete' and item.recommendation.module %}
+        <div class="reco reco-{{ item.recommendation.action }}" style="margin-top: 1rem;">
+            <strong>Up next</strong>
+            <span><a href="{{ url_for('module', module_id=item.recommendation.module.id) }}">{{ item.recommendation.module.title }} →</a></span>
+            <span class="small">{{ item.recommendation.reason }}</span>
+        </div>
+        {% endif %}
+
+    </div>
+    {% endfor %}
+</section>
+
+{# ── Goal Skill Bars ──────────────────────────────────────────── #}
+{% set goal_skills = {
+    'Data Science':     [('Python','c_ds'), ('Statistics','c_da'), ('ML/AI','c_genai')],
+    'AI':               [('Generative AI','c_genai'), ('Data Foundations','c_ds'), ('Analytics','c_da')],
+    'Web Development':  [('Frontend','c_web'), ('Backend Logic','c_web'), ('Data','c_ds')],
+    'Marketing':        [('Digital Marketing','c_dm'), ('Analytics','c_da'), ('Product','c_pm')],
+    'Product':          [('Product Strategy','c_pm'), ('Analytics','c_da'), ('Marketing','c_dm')],
+    'Analytics':        [('Data Analysis','c_da'), ('Python','c_ds'), ('Dashboarding','c_dm')]
+} %}
+{% set skills = goal_skills.get(user.goal, []) %}
+{% if skills %}
+<section>
+    <h3>{{ user.goal }} skill progress</h3>
+    <div style="background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.25rem 1.5rem;">
+        <div class="skill-bars">
+            {% for skill_name, course_id in skills %}
+            {% set course_pct = namespace(val=0) %}
+            {% for item in path %}
+                {% if item.course.id == course_id %}
+                    {% set course_pct.val = item.completion %}
+                {% endif %}
+            {% endfor %}
+            <div class="skill-row">
+                <span class="skill-name">{{ skill_name }}</span>
+                <div class="skill-track">
+                    <div class="skill-fill" data-pct="{{ course_pct.val }}" style="width: 0%;"></div>
+                </div>
+                <span class="skill-pct">{{ course_pct.val }}%</span>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+{% else %}
+<div style="background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 3rem 2rem; text-align: center; margin-bottom: 2rem;">
+    <p class="muted" style="margin-bottom: 1rem;">You haven't enrolled in a program yet.</p>
+    <a href="{{ url_for('catalogue') }}" class="btn-primary">Browse programs</a>
+</div>
+{% endif %}
+
+{# ── Recommended programs ─────────────────────────────────────── #}
+{% if recommended %}
+<section>
+    <h3>Recommended for you</h3>
+    <div class="grid">
+        {% for c in recommended %}
+        <article class="card">
+            <div class="card-head">
+                <h4>{{ c.title }}</h4>
+                <span class="tag info">{{ c.track }}</span>
+            </div>
+            <p class="card-desc">{{ c.description }}</p>
+            <div class="card-meta">
+                <span>{{ c.level }}</span><span>·</span><span>{{ c.duration_weeks }} weeks</span>
+            </div>
+            <div class="card-actions">
+                <a href="{{ url_for('course', course_id=c.id) }}" class="btn-outline">Preview</a>
+                <form method="POST" action="{{ url_for('enroll', course_id=c.id) }}">
+                    <button type="submit" class="btn-primary">Enroll</button>
+                </form>
+            </div>
+        </article>
+        {% endfor %}
+    </div>
+</section>
+{% endif %}
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+// Animate XP fill bar
+document.addEventListener('DOMContentLoaded', () => {
+    const xpFill = document.getElementById('xp-fill');
+    if (xpFill) setTimeout(() => { xpFill.style.width = xpFill.dataset.pct + '%'; }, 200);
+
+    // Animate circular rings
+    document.querySelectorAll('.journey-ring').forEach(ring => {
+        const pct = parseFloat(ring.dataset.pct);
+        const circ = 163.4;
+        setTimeout(() => { ring.style.strokeDashoffset = circ * (1 - pct / 100); }, 300);
+    });
+
+    // Animate skill bars
+    document.querySelectorAll('.skill-fill').forEach(bar => {
+        setTimeout(() => { bar.style.width = bar.dataset.pct + '%'; }, 400);
+    });
+});
+</script>
+{% endblock %}

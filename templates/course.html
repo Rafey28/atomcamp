@@ -1,0 +1,94 @@
+{% extends "base.html" %}
+{% block content %}
+<a href="{{ url_for('dashboard') if user else url_for('catalogue') }}" class="back">Back</a>
+
+<header class="page-head">
+    <div style="max-width: 720px;">
+        <span class="tag">{{ course.track }}</span>
+        <h2 style="margin-top: 0.5rem;">{{ course.title }}</h2>
+        <p class="subtitle">{{ course.description }}</p>
+        <div style="margin-top: 0.75rem; display: flex; gap: 1rem; font-size: 0.825rem; color: var(--muted);">
+            <span>{{ course.level }}</span>
+            <span>·</span>
+            <span>{{ course.duration_weeks }} weeks</span>
+            <span>·</span>
+            <span>{{ modules|length }} modules</span>
+        </div>
+    </div>
+    {% if user and user.role == 'student' %}
+    <div style="text-align: right;">
+        <div class="stat-num">{{ avg if avg is not none else '—' }}{% if avg is not none %}<span style="font-size: 1rem; color: var(--muted); font-weight: 500;">%</span>{% endif %}</div>
+        <div class="stat-label">Your avg.</div>
+    </div>
+    {% endif %}
+</header>
+
+{% if course.outcomes %}
+<section>
+    <h3>What you'll be able to do</h3>
+    <ul class="outcomes-list">
+        {% for o in course.outcomes %}<li>{{ o }}</li>{% endfor %}
+    </ul>
+</section>
+{% endif %}
+
+{% if user and user.role == 'student' and next_course %}
+<div class="reco reco-complete" style="border-color: var(--success); background: var(--success-bg); padding: 1.25rem 1.5rem; border-radius: 10px; margin-bottom: 1.5rem;">
+    <strong>Course complete — AI recommends your next step</strong>
+    <span style="font-size: 1rem; font-weight: 600; margin-top: 0.25rem;">{{ next_course.title }}</span>
+    <span class="small">{{ next_course.rationale }}</span>
+    <a href="{{ url_for('catalogue') }}" class="btn-primary sm" style="margin-top: 0.75rem; display: inline-block;">Enroll now →</a>
+</div>
+{% elif user and user.role == 'student' and rec and rec.action != 'complete' %}
+<div class="reco reco-{{ rec.action }}">
+    <strong>Recommended next</strong>
+    <span><a href="{{ url_for('module', module_id=rec.module.id) }}">{{ rec.module.title }} →</a></span>
+    <span class="small">{{ rec.reason }}</span>
+</div>
+{% endif %}
+
+<section>
+    <h3>Curriculum</h3>
+    {% if user and user.role == 'student' and completion is defined and completion < 100 %}
+    <p class="muted small" style="margin-bottom: 1rem;">Complete each module's quiz (score ≥ 60%) to unlock the next one.</p>
+    {% endif %}
+    <ol class="module-list">
+        {% for m in modules %}
+            {% set p = (progress.get(m.id) if progress else None) %}
+            {% set is_unlocked = unlocked.get(m.id, true) %}
+            <li class="module-item" style="{{ 'opacity: 0.55;' if not is_unlocked else '' }}">
+                <div class="module-num-wrap">
+                    <div class="module-num">{{ "%02d"|format(m.order) }}</div>
+                    <div class="module-body">
+                        <strong>{{ m.title }}</strong>
+                        <p>{{ m.content[:130] }}{% if m.content|length > 130 %}…{% endif %}</p>
+                    </div>
+                </div>
+                <div class="module-meta">
+                    <span class="tiny muted mono">{{ (m.duration_minutes // 60) }}h {{ (m.duration_minutes % 60) }}m</span>
+                    {% if p %}
+                        <span class="badge badge-{{ p.status }}">{{ p.last_score }}%</span>
+                    {% elif user and user.role == 'student' %}
+                        <span class="badge badge-pending">{% if not is_unlocked %}Locked{% else %}Not started{% endif %}</span>
+                    {% endif %}
+                    {% if user %}
+                        {% if is_unlocked %}
+                        <a href="{{ url_for('module', module_id=m.id) }}" class="btn-outline sm">Open</a>
+                        {% else %}
+                        <span class="btn-outline sm" style="cursor: not-allowed; color: var(--muted);" title="Complete the previous module first">Locked</span>
+                        {% endif %}
+                    {% endif %}
+                </div>
+            </li>
+        {% endfor %}
+    </ol>
+</section>
+
+{% if user and user.role == 'student' and not is_enrolled %}
+<section style="text-align: center;">
+    <form method="POST" action="{{ url_for('enroll', course_id=course.id) }}">
+        <button type="submit" class="btn-primary lg">Enroll in this program</button>
+    </form>
+</section>
+{% endif %}
+{% endblock %}

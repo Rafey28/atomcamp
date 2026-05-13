@@ -1,0 +1,229 @@
+{% extends "base.html" %}
+{% block content %}
+<a href="{{ url_for('course', course_id=mod.course_id) }}" class="back">Back to course</a>
+
+<header class="page-head">
+    <div style="max-width: 720px;">
+        <span class="tag">Module {{ "%02d"|format(mod.order) }}</span>
+        <h2 style="margin-top: 0.5rem;">{{ mod.title }}</h2>
+        <div style="margin-top: 0.5rem; display: flex; gap: 1rem; font-size: 0.825rem; color: var(--muted);">
+            <span>{{ (mod.duration_minutes // 60) }} hr {{ (mod.duration_minutes % 60) }} min</span>
+            {% if progress %}<span>·</span><span>Last score: {{ progress.last_score }}%</span>{% endif %}
+        </div>
+    </div>
+</header>
+
+{% if mod.get('video_url') %}
+<section style="margin-bottom: 1.5rem;">
+    <div style="background: #000; border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow);">
+        <video
+            src="{{ mod.video_url }}"
+            controls
+            controlsList="nodownload"
+            style="width: 100%; max-height: 480px; display: block;"
+            preload="metadata">
+            Your browser does not support HTML5 video.
+        </video>
+    </div>
+</section>
+{% endif %}
+
+<section class="content-card">
+    <p>{{ mod.content }}</p>
+</section>
+
+{% if mod.objectives %}
+<div class="objectives">
+    <h4>Learning objectives</h4>
+    <ul>
+        {% for o in mod.objectives %}<li>{{ o }}</li>{% endfor %}
+    </ul>
+</div>
+{% endif %}
+
+<section id="quiz-root" class="quiz-shell">
+    <div id="quiz-loader" class="quiz-loader">
+        <div class="spinner"></div>
+        <div>
+            <h3>Generating quiz using AI…</h3>
+            <p class="muted">This may take a few seconds.</p>
+        </div>
+    </div>
+    <div id="quiz-error" class="muted hidden">
+        <p id="quiz-error-msg"></p>
+        <button id="quiz-retry-btn" class="btn-outline" style="margin-top:0.75rem;">Try again</button>
+    </div>
+    <form id="quiz-form" class="quiz hidden"></form>
+    <div id="quiz-result" class="quiz-result hidden"></div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script>
+const moduleId = "{{ mod.id }}";
+const moduleTitle = "{{ mod.title }}";
+const courseUrl = "{{ url_for('course', course_id=mod.course_id) }}";
+const quizLoader = document.getElementById('quiz-loader');
+const quizForm = document.getElementById('quiz-form');
+const quizError = document.getElementById('quiz-error');
+const quizErrorMsg = document.getElementById('quiz-error-msg');
+const quizResult = document.getElementById('quiz-result');
+const retryBtn = document.getElementById('quiz-retry-btn');
+
+function showError(message) {
+    quizLoader.classList.add('hidden');
+    quizForm.classList.add('hidden');
+    quizResult.classList.add('hidden');
+    quizErrorMsg.textContent = message;
+    quizError.classList.remove('hidden');
+}
+
+function renderQuiz(quiz) {
+    quizLoader.classList.add('hidden');
+    quizError.classList.add('hidden');
+    quizForm.innerHTML = '';
+
+    const header = document.createElement('div');
+    header.innerHTML = `<h3>Knowledge check · ${quiz.questions.length} questions</h3>`;
+    quizForm.appendChild(header);
+
+    quiz.questions.forEach((q, idx) => {
+        const question = document.createElement('div');
+        question.className = 'question';
+        question.innerHTML = `
+            <div class="question-num">QUESTION ${String(idx + 1).padStart(2, '0')} / ${quiz.questions.length}</div>
+            <p class="q-text"></p>
+        `;
+        question.querySelector('.q-text').textContent = q.q;
+        q.options.forEach((opt, optIndex) => {
+            const label = document.createElement('label');
+            label.className = 'option';
+            label.innerHTML = `<input type="radio" name="q${idx}" value="${optIndex}"><span></span>`;
+            label.querySelector('span').textContent = opt;
+            question.appendChild(label);
+        });
+        quizForm.appendChild(question);
+    });
+
+    const actions = document.createElement('div');
+    actions.style = 'display: flex; gap: 0.5rem; margin-top: 0.5rem;';
+    actions.innerHTML = `
+        <button type="submit" class="btn-primary lg">Submit answers</button>
+        <a href="${courseUrl}" class="btn-outline lg">Cancel</a>
+    `;
+    quizForm.appendChild(actions);
+    quizForm.classList.remove('hidden');
+}
+
+function fetchQuiz() {
+    quizError.classList.add('hidden');
+    quizForm.classList.add('hidden');
+    quizResult.classList.add('hidden');
+    quizLoader.querySelector('h3').textContent = 'Generating quiz using AI…';
+    quizLoader.classList.remove('hidden');
+
+    fetch(`/module/${moduleId}/ai_quiz`)
+        .then(res => res.json())
+        .then(data => {
+            if (data.error) { showError(data.error); return; }
+            renderQuiz(data.quiz);
+        })
+        .catch(() => showError('Network error. Please check your connection and try again.'));
+}
+
+retryBtn.addEventListener('click', fetchQuiz);
+
+quizForm.addEventListener('submit', (event) => {
+    event.preventDefault();
+    const formData = new FormData(quizForm);
+    const questions = quizForm.querySelectorAll('.question');
+    const answers = [];
+    for (let i = 0; i < questions.length; i++) {
+        const value = formData.get(`q${i}`);
+        if (value === null) { showError('Please answer all questions before submitting.'); return; }
+        answers.push(Number(value));
+    }
+    quizLoader.querySelector('h3').textContent = 'Submitting answers…';
+    quizLoader.classList.remove('hidden');
+    quizForm.classList.add('hidden');
+
+    fetch(`/module/${moduleId}/submit_ai_quiz`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ answers }),
+    })
+        .then(res => res.json())
+        .then(data => {
+            quizLoader.classList.add('hidden');
+            if (data.error) { showError(data.error); return; }
+
+            const scoreColor = data.score >= 80 ? '#15803d' : data.score >= 60 ? '#b45309' : '#b91c1c';
+            const scoreBg   = data.score >= 80 ? '#f0fdf4' : data.score >= 60 ? '#fffbeb' : '#fef2f2';
+
+            quizResult.innerHTML = `
+                <div style="background:${scoreBg}; border:1px solid; border-color:${scoreColor}40; border-radius:var(--radius); padding:1.5rem; text-align:center;">
+                    <div style="font-size:2.5rem; font-weight:700; color:${scoreColor}; font-family:'JetBrains Mono',monospace; letter-spacing:-0.02em;">${data.score}%</div>
+                    <div style="font-size:0.85rem; color:var(--muted); margin:0.25rem 0 1rem;">${data.correct} / ${data.total} correct</div>
+                    <div style="max-width:420px; margin:0 auto 1.25rem; font-size:0.9rem; color:var(--text-2); line-height:1.6;">${data.remark}</div>
+                    <div style="display:flex;gap:0.5rem;justify-content:center;flex-wrap:wrap;">
+                        <button id="new-quiz-btn" class="btn-outline">Try new quiz</button>
+                        <a href="${courseUrl}" class="btn-primary">Back to course</a>
+                    </div>
+                </div>
+            `;
+            quizResult.classList.remove('hidden');
+            document.getElementById('new-quiz-btn').addEventListener('click', () => {
+                quizResult.classList.add('hidden');
+                fetchQuiz();
+            });
+
+            if (data.score >= 90) launchConfetti();
+            showAIToast(data.score, moduleTitle);
+        })
+        .catch(() => showError('Unable to submit answers. Please try again.'));
+});
+
+fetchQuiz();
+
+// ── Confetti ──────────────────────────────────────────────────
+function launchConfetti() {
+    const colors = ['#4f46e5','#22c55e','#f59e0b','#ef4444','#8b5cf6','#06b6d4'];
+    for (let i = 0; i < 60; i++) {
+        const el = document.createElement('div');
+        el.className = 'confetti-piece';
+        el.style.cssText = `
+            left: ${Math.random() * 100}vw;
+            background: ${colors[Math.floor(Math.random() * colors.length)]};
+            width: ${6 + Math.random() * 8}px;
+            height: ${6 + Math.random() * 8}px;
+            border-radius: ${Math.random() > 0.5 ? '50%' : '2px'};
+            animation-duration: ${1.5 + Math.random() * 2}s;
+            animation-delay: ${Math.random() * 0.8}s;
+        `;
+        document.body.appendChild(el);
+        el.addEventListener('animationend', () => el.remove());
+    }
+}
+
+// ── AI Tutor Toast ────────────────────────────────────────────
+function showAIToast(score, title) {
+    let msg = '';
+    if (score >= 90) {
+        msg = `Outstanding! You mastered <strong>${title}</strong>. You're ready to advance to the next module.`;
+    } else if (score >= 60) {
+        msg = `Good effort on <strong>${title}</strong>. Review the concepts you found tricky before moving on.`;
+    } else {
+        msg = `I noticed you struggled with <strong>${title}</strong>. I recommend re-reading the module content before retrying.`;
+    }
+    const toast = document.createElement('div');
+    toast.className = 'ai-toast';
+    toast.innerHTML = `
+        <button class="ai-toast-close" onclick="this.parentElement.classList.add('hide'); setTimeout(()=>this.parentElement.remove(),300);">×</button>
+        <div class="ai-toast-head"><div class="ai-toast-dot"></div> AI Tutor</div>
+        <p>${msg}</p>
+    `;
+    document.body.appendChild(toast);
+    setTimeout(() => { toast.classList.add('hide'); setTimeout(() => toast.remove(), 300); }, 8000);
+}
+</script>
+{% endblock %}

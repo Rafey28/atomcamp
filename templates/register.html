@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="auth-card">
+    <h2>Create your learning profile</h2>
+    <p>Tell us about your goals so we can personalise your path from day one.</p>
+    <form method="POST" class="form">
+        <div class="form-row">
+            <label>Full name
+                <input type="text" name="name" required placeholder="Jane Doe">
+            </label>
+            <label>Email
+                <input type="email" name="email" required placeholder="you@example.com">
+            </label>
+        </div>
+        <label>Career goal
+            <select name="goal" required>
+                <option value="Data Science">Become a Data Scientist</option>
+                <option value="AI">Build AI / LLM applications</option>
+                <option value="Web Development">Become a Full-Stack Developer</option>
+                <option value="Marketing">Move into Digital Marketing</option>
+                <option value="Product">Transition into Product Management</option>
+                <option value="Analytics">Become a Data Analyst</option>
+                <option value="General">I'm exploring my options</option>
+            </select>
+        </label>
+        <label>Current background
+            <select name="background" required>
+                <option value="Student">University student</option>
+                <option value="Fresh graduate">Fresh graduate, looking for first role</option>
+                <option value="Switching careers">Working professional, switching careers</option>
+                <option value="Upskilling">Working in tech, upskilling</option>
+                <option value="Founder">Founder or freelancer</option>
+                <option value="Other">Something else</option>
+            </select>
+        </label>
+        <div class="form-row">
+            <label>Skill level
+                <select name="skill_level" required>
+                    <option value="beginner">Beginner</option>
+                    <option value="intermediate">Intermediate</option>
+                    <option value="advanced">Advanced</option>
+                </select>
+            </label>
+            <label>Hours per week
+                <select name="time_commitment" required>
+                    <option value="3">Under 5</option>
+                    <option value="7">5 – 10</option>
+                    <option value="15">10 – 20</option>
+                    <option value="25">20+</option>
+                </select>
+            </label>
+        </div>
+        <button class="btn-primary lg" type="submit">Create account</button>
+        <p class="muted center tiny">Already have an account? <a href="{{ url_for('login') }}" style="color: var(--text); font-weight: 500;">Sign in</a></p>
+    </form>
+</div>
+{% endblock %}

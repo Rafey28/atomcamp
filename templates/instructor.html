@@ -1,0 +1,454 @@
+{% extends "base.html" %}
+{% block content %}
+<header class="page-head">
+    <div>
+        <h2>Instructor intelligence</h2>
+        <p class="subtitle">Real-time insights from the adaptive engine — engagement, performance, and risk signals.</p>
+    </div>
+</header>
+
+<section class="stats-row">
+    <div class="stat-card">
+        <span class="stat-num">{{ overview.total_students }}</span>
+        <span class="stat-label">Total students</span>
+    </div>
+    <div class="stat-card">
+        <span class="stat-num">{{ overview.engagement.active_7d }}<span style="font-size: 1rem; color: var(--muted); font-weight: 500;"> / {{ overview.engagement.total_students }}</span></span>
+        <span class="stat-label">Active (7d)</span>
+        <span class="stat-trend">{{ overview.engagement.engagement_rate }}% engagement</span>
+    </div>
+    <div class="stat-card">
+        <span class="stat-num">{{ overview.total_courses }}</span>
+        <span class="stat-label">Programs</span>
+    </div>
+    <div class="stat-card">
+        <span class="stat-num">{{ overview.total_modules }}</span>
+        <span class="stat-label">Modules</span>
+    </div>
+    <div class="stat-card">
+        <span class="stat-num">{{ overview.total_attempts }}</span>
+        <span class="stat-label">Quiz attempts</span>
+    </div>
+    <div class="stat-card">
+        <span class="stat-num">{{ overview.overall_average }}<span style="font-size: 1rem; color: var(--muted); font-weight: 500;">%</span></span>
+        <span class="stat-label">Overall avg.</span>
+    </div>
+</section>
+
+<section>
+    <h3>
+        Red alert — at-risk students
+        {% if overview.at_risk %}
+        <span class="notif-badge" style="position: relative; top: auto; right: auto; display: inline-grid; margin-left: 0.5rem; animation: badgePulse 2s ease-in-out infinite;">{{ overview.at_risk|length }}</span>
+        {% endif %}
+    </h3>
+    {% if overview.at_risk %}
+    <div class="grid">
+        {% for r in overview.at_risk %}
+        <article class="card risk" id="risk-card-{{ r.student.id }}">
+            <div class="card-head">
+                <div>
+                    <h4>{{ r.student.name }}</h4>
+                    <p class="muted small" style="margin-top:0.2rem;">{{ r.student.email }} · {{ r.student.goal }}</p>
+                </div>
+                <span class="tag danger" style="animation: badgePulse 2s ease-in-out infinite;">At risk</span>
+            </div>
+            <ul style="list-style:none; display:flex; flex-direction:column; gap:0.4rem; padding-top:0.6rem; border-top:1px solid var(--border);">
+                {% for reason in r.reasons %}
+                <li style="font-size:0.825rem; color:var(--danger); display:flex; gap:0.5rem;">
+                    <span>•</span><span>{{ reason }}</span>
+                </li>
+                {% endfor %}
+            </ul>
+            <div class="risk-actions">
+                <button class="btn-nudge" id="nudge-{{ r.student.id }}"
+                    onclick="sendNudge('{{ r.student.id }}', this)"
+                    {% if r.student.get('last_nudge') %}style="pointer-events:none;" class="btn-nudge sent"{% endif %}>
+                    📣 Send nudge{% if r.student.get('last_nudge') %} ✓{% endif %}
+                </button>
+                <select class="risk-module-select" id="mod-select-{{ r.student.id }}">
+                    <option value="">Assign review…</option>
+                    {% for course in courses %}
+                        {% for m in course_modules[course.id] %}
+                        <option value="{{ m.id }}">{{ m.title[:30] }}</option>
+                        {% endfor %}
+                    {% endfor %}
+                </select>
+                <button class="btn-review" id="review-{{ r.student.id }}"
+                    onclick="assignReview('{{ r.student.id }}', this)">
+                    📚 Assign
+                </button>
+            </div>
+        </article>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="card" style="text-align: center; padding: 2rem;">
+        <p class="muted" style="font-size: 1.5rem; margin-bottom: 0.5rem;">✓</p>
+        <p class="muted">No students flagged. Everyone is on track.</p>
+    </div>
+    {% endif %}
+</section>
+
+{% if overview.heatmap %}
+<section>
+    <h3>Module mastery heatmap</h3>
+    <p class="muted small" style="margin-bottom: 1.25rem;">Pass rate per module — red flags where students are struggling and content may need review.</p>
+    {% for course_row in overview.heatmap %}
+    <div style="margin-bottom: 2rem;">
+        <h4 style="margin-bottom: 0.75rem; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted);">{{ course_row.course.title }}</h4>
+        {% for m in course_row.modules %}
+        <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 0.6rem;">
+            <span style="min-width: 200px; font-size: 0.85rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="{{ m.title }}">{{ "%02d"|format(m.order) }}. {{ m.title }}</span>
+            {% if m.attempts > 0 %}
+            <div style="flex: 1; background: var(--border); border-radius: 4px; height: 10px; overflow: hidden;">
+                <div style="width: {{ m.pass_rate }}%; height: 100%; background: {{ '#22c55e' if m.pass_rate >= 70 else ('#f59e0b' if m.pass_rate >= 40 else '#ef4444') }}; border-radius: 4px; transition: width 0.3s;"></div>
+            </div>
+            <span class="mono" style="min-width: 42px; font-size: 0.8rem; color: {{ '#22c55e' if m.pass_rate >= 70 else ('#f59e0b' if m.pass_rate >= 40 else '#ef4444') }};">{{ m.pass_rate }}%</span>
+            <span class="muted mono" style="font-size: 0.75rem; min-width: 60px;">{{ m.attempts }} attempt{{ 's' if m.attempts != 1 }}</span>
+            {% if m.pass_rate < 40 %}
+            <span class="tag danger" style="font-size: 0.7rem;">Review content</span>
+            {% endif %}
+            {% else %}
+            <div style="flex: 1; background: var(--border); border-radius: 4px; height: 10px;"></div>
+            <span class="muted mono" style="font-size: 0.8rem; min-width: 42px;">—</span>
+            <span class="muted mono" style="font-size: 0.75rem; min-width: 60px;">No data</span>
+            {% endif %}
+        </div>
+        {% endfor %}
+    </div>
+    {% endfor %}
+</section>
+{% endif %}
+
+{% if overview.difficulty %}
+<section>
+    <h3>Bottom 5 — modules needing attention</h3>
+    <div class="table-wrap">
+        <table class="table">
+            <thead>
+                <tr><th>Module</th><th>Program</th><th>Attempts</th><th>Avg. score</th><th>Pass rate</th></tr>
+            </thead>
+            <tbody>
+                {% for d in overview.difficulty[:5] %}
+                    <tr>
+                        <td><strong>{{ d.module.title }}</strong></td>
+                        <td class="muted">{{ d.course.title }}</td>
+                        <td class="mono">{{ d.attempts }}</td>
+                        <td class="mono">{{ d.avg_score }}%</td>
+                        <td>
+                            <span class="badge badge-{{ 'completed' if d.pass_rate >= 70 else ('needs_review' if d.pass_rate >= 40 else 'pending') }}">
+                                {{ d.pass_rate }}%
+                            </span>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</section>
+{% endif %}
+
+{% if overview.top_performers %}
+<section>
+    <h3>Top performers</h3>
+    <div class="table-wrap">
+        <table class="table">
+            <thead>
+                <tr><th>Student</th><th>Goal</th><th>Modules completed</th><th>Average</th></tr>
+            </thead>
+            <tbody>
+                {% for t in overview.top_performers %}
+                    <tr>
+                        <td><strong>{{ t.student.name }}</strong></td>
+                        <td class="muted">{{ t.student.goal }}</td>
+                        <td class="mono">{{ t.modules }}</td>
+                        <td class="mono">{{ t.avg }}%</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</section>
+{% endif %}
+
+<section id="content-mgmt">
+    <h3>Content management</h3>
+    <p class="muted small" style="margin-bottom: 1.5rem;">Upload lecture videos per module. Students see the video at the top of each module page.</p>
+    {% for course in courses %}
+    {% set mods = course_modules[course.id] %}
+    <details class="course-accordion" style="margin-bottom: 1rem; border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden;">
+        <summary style="padding: 1rem 1.25rem; cursor: pointer; display: flex; align-items: center; justify-content: space-between; background: var(--surface); font-weight: 600; list-style: none; user-select: none;">
+            <span>{{ course.title }}</span>
+            <span class="muted" style="font-size: 0.8rem; font-weight: 400;">{{ mods|length }} modules · {{ mods|selectattr('video_url')|list|length }} with video</span>
+        </summary>
+        <div style="padding: 0.75rem 1.25rem 1.25rem; background: var(--surface-2); display: flex; flex-direction: column; gap: 1rem;">
+            {% for m in mods %}
+            <div class="module-upload-row" data-module-id="{{ m.id }}">
+                <div style="display: flex; align-items: flex-start; gap: 1rem; flex-wrap: wrap;">
+                    <div style="flex: 1; min-width: 220px;">
+                        <div style="font-weight: 500; font-size: 0.875rem;">{{ "%02d"|format(m.order) }}. {{ m.title }}</div>
+                        <div class="muted" style="font-size: 0.75rem; margin-top: 0.2rem;">{{ m.duration_minutes // 60 }}h {{ m.duration_minutes % 60 }}m</div>
+                    </div>
+                    <div style="flex: 2; min-width: 280px;">
+                        {% if m.get('video_url') %}
+                        <div class="video-existing" id="existing-{{ m.id }}">
+                            <video src="{{ m.video_url }}" controls style="width: 100%; max-height: 180px; border-radius: 6px; background: #000; display: block;"></video>
+                            <div style="display: flex; gap: 0.5rem; margin-top: 0.5rem;">
+                                <label class="btn-outline sm" style="cursor: pointer; font-size: 0.8rem;">
+                                    Replace
+                                    <input type="file" accept="video/mp4,video/webm,video/quicktime,video/x-matroska" style="display:none;" onchange="uploadVideo('{{ m.id }}', this)">
+                                </label>
+                                <button class="btn-ghost danger sm" style="font-size: 0.8rem;" onclick="deleteVideo('{{ m.id }}')">Remove</button>
+                            </div>
+                        </div>
+                        {% else %}
+                        <div class="upload-zone" id="zone-{{ m.id }}"
+                             onclick="document.getElementById('file-{{ m.id }}').click()"
+                             ondragover="event.preventDefault(); this.classList.add('drag-over')"
+                             ondragleave="this.classList.remove('drag-over')"
+                             ondrop="event.preventDefault(); this.classList.remove('drag-over'); uploadVideo('{{ m.id }}', event.dataTransfer.files[0])">
+                            <svg width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1M12 12V4m0 0L8 8m4-4l4 4"/></svg>
+                            <p style="margin-top: 0.5rem; font-weight: 500; font-size: 0.85rem;">Drop video here or click to browse</p>
+                            <p class="muted" style="font-size: 0.75rem; margin-top: 0.25rem;">MP4, WebM, MOV, MKV — max 500 MB</p>
+                            <input type="file" id="file-{{ m.id }}" accept="video/mp4,video/webm,video/quicktime,video/x-matroska" style="display:none;" onchange="uploadVideo('{{ m.id }}', this)">
+                        </div>
+                        {% endif %}
+                        <div class="upload-progress hidden" id="progress-{{ m.id }}" style="margin-top: 0.5rem;">
+                            <div style="display: flex; justify-content: space-between; font-size: 0.78rem; margin-bottom: 4px;">
+                                <span id="progress-label-{{ m.id }}" class="muted">Uploading…</span>
+                                <span id="progress-pct-{{ m.id }}" class="mono muted">0%</span>
+                            </div>
+                            <div style="background: var(--border); border-radius: 4px; height: 6px; overflow: hidden;">
+                                <div id="progress-bar-{{ m.id }}" style="height: 100%; width: 0%; background: var(--accent); border-radius: 4px; transition: width 0.2s;"></div>
+                            </div>
+                        </div>
+                        <div class="upload-error hidden" id="error-{{ m.id }}" style="color: var(--danger); font-size: 0.8rem; margin-top: 0.4rem;"></div>
+                    </div>
+                </div>
+            </div>
+            {% if not loop.last %}<hr style="border: none; border-top: 1px solid var(--border);">{% endif %}
+            {% endfor %}
+        </div>
+    </details>
+    {% endfor %}
+</section>
+
+<section>
+    <h3>All students ({{ students|length }})</h3>
+    <div class="table-wrap">
+        <table class="table">
+            <thead>
+                <tr><th>Name</th><th>Email</th><th>Goal</th><th>Level</th><th>Hrs/wk</th><th>Last active</th></tr>
+            </thead>
+            <tbody>
+                {% for s in students %}
+                    <tr>
+                        <td><strong>{{ s.name }}</strong></td>
+                        <td class="muted">{{ s.email }}</td>
+                        <td>{{ s.goal }}</td>
+                        <td>{{ s.skill_level|capitalize }}</td>
+                        <td class="mono">{{ s.time_commitment or '—' }}</td>
+                        <td class="mono muted">{{ s.last_login[:10] }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</section>
+{% if rec_report %}
+<section>
+    <h3>AI recommendation tracking</h3>
+    <div class="table-wrap">
+        <table class="table">
+            <thead>
+                <tr><th>Student</th><th>Completed</th><th>AI Recommended</th><th>Date</th><th>Viewed</th><th>Enrolled</th><th>Progress</th></tr>
+            </thead>
+            <tbody>
+                {% for r in rec_report %}
+                <tr>
+                    <td><strong>{{ r.student.name }}</strong></td>
+                    <td class="muted">{{ r.from_course.title[:28] }}{% if r.from_course.title|length > 28 %}…{% endif %}</td>
+                    <td>{{ r.to_course.title[:28] }}{% if r.to_course.title|length > 28 %}…{% endif %}</td>
+                    <td class="mono muted">{{ r.recommended_at }}</td>
+                    <td><span class="badge badge-{{ 'completed' if r.viewed else 'pending' }}">{{ 'Yes' if r.viewed else 'No' }}</span></td>
+                    <td><span class="badge badge-{{ 'completed' if r.enrolled else 'pending' }}">{{ 'Yes' if r.enrolled else 'No' }}</span></td>
+                    <td class="mono">{% if r.progress is not none %}{{ r.progress }}%{% else %}—{% endif %}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</section>
+{% endif %}
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+function sendNudge(userId, btn) {
+    btn.disabled = true;
+    btn.textContent = 'Sending…';
+    fetch(`/instructor/nudge/${userId}`, { method: 'POST' })
+        .then(r => r.json())
+        .then(() => {
+            btn.textContent = '📣 Nudge sent ✓';
+            btn.classList.add('sent');
+        })
+        .catch(() => { btn.disabled = false; btn.textContent = '📣 Send nudge'; });
+}
+
+function assignReview(userId, btn) {
+    const sel = document.getElementById('mod-select-' + userId);
+    const moduleId = sel.value;
+    if (!moduleId) { sel.style.borderColor = 'var(--danger)'; return; }
+    sel.style.borderColor = '';
+    btn.disabled = true;
+    btn.textContent = 'Assigning…';
+    fetch(`/instructor/assign-review/${userId}/${moduleId}`, { method: 'POST' })
+        .then(r => r.json())
+        .then(() => {
+            btn.textContent = '✓ Assigned';
+            btn.classList.add('assigned');
+            sel.disabled = true;
+        })
+        .catch(() => { btn.disabled = false; btn.textContent = '📚 Assign'; });
+}
+</script>
+<style>
+.upload-zone {
+    border: 2px dashed var(--border-strong);
+    border-radius: var(--radius);
+    padding: 1.5rem 1rem;
+    text-align: center;
+    cursor: pointer;
+    color: var(--muted);
+    background: var(--surface);
+    transition: border-color 0.2s, background 0.2s;
+}
+.upload-zone:hover, .upload-zone.drag-over {
+    border-color: var(--accent);
+    background: #eff6ff;
+    color: var(--accent);
+}
+.upload-zone svg { opacity: 0.5; }
+.upload-zone:hover svg, .upload-zone.drag-over svg { opacity: 1; }
+.hidden { display: none !important; }
+.btn-ghost.danger { color: var(--danger); }
+.btn-ghost.danger:hover { background: var(--danger-bg); }
+details.course-accordion summary::-webkit-details-marker { display: none; }
+details.course-accordion[open] summary { border-bottom: 1px solid var(--border); }
+</style>
+<script>
+function uploadVideo(moduleId, source) {
+    const file = source instanceof File ? source : (source.files && source.files[0]);
+    if (!file) return;
+
+    const allowedTypes = ['video/mp4', 'video/webm', 'video/quicktime', 'video/x-matroska'];
+    const errorEl = document.getElementById('error-' + moduleId);
+    const progressEl = document.getElementById('progress-' + moduleId);
+    const progressBar = document.getElementById('progress-bar-' + moduleId);
+    const progressPct = document.getElementById('progress-pct-' + moduleId);
+    const progressLabel = document.getElementById('progress-label-' + moduleId);
+    const zone = document.getElementById('zone-' + moduleId);
+    const existing = document.getElementById('existing-' + moduleId);
+
+    errorEl.classList.add('hidden');
+    errorEl.textContent = '';
+
+    if (!allowedTypes.includes(file.type)) {
+        errorEl.textContent = 'Invalid file type. Use MP4, WebM, MOV, or MKV.';
+        errorEl.classList.remove('hidden');
+        return;
+    }
+    if (file.size > 500 * 1024 * 1024) {
+        errorEl.textContent = 'File exceeds 500 MB limit.';
+        errorEl.classList.remove('hidden');
+        return;
+    }
+
+    const formData = new FormData();
+    formData.append('video', file);
+
+    progressLabel.textContent = `Uploading ${file.name} (${(file.size / 1024 / 1024).toFixed(1)} MB)…`;
+    progressEl.classList.remove('hidden');
+    if (zone) zone.style.pointerEvents = 'none';
+
+    const xhr = new XMLHttpRequest();
+    xhr.upload.addEventListener('progress', e => {
+        if (e.lengthComputable) {
+            const pct = Math.round(e.loaded / e.total * 100);
+            progressBar.style.width = pct + '%';
+            progressPct.textContent = pct + '%';
+        }
+    });
+    xhr.addEventListener('load', () => {
+        progressEl.classList.add('hidden');
+        if (zone) zone.style.pointerEvents = '';
+        if (xhr.status === 200) {
+            const data = JSON.parse(xhr.responseText);
+            const container = zone || existing;
+            const parent = container.parentNode;
+            parent.innerHTML = `
+                <div class="video-existing" id="existing-${moduleId}">
+                    <video src="${data.video_url}" controls style="width:100%;max-height:180px;border-radius:6px;background:#000;display:block;"></video>
+                    <div style="display:flex;gap:0.5rem;margin-top:0.5rem;">
+                        <label class="btn-outline sm" style="cursor:pointer;font-size:0.8rem;">
+                            Replace
+                            <input type="file" accept="video/mp4,video/webm,video/quicktime,video/x-matroska" style="display:none;" onchange="uploadVideo('${moduleId}', this)">
+                        </label>
+                        <button class="btn-ghost danger sm" style="font-size:0.8rem;" onclick="deleteVideo('${moduleId}')">Remove</button>
+                    </div>
+                </div>
+                <div class="upload-progress hidden" id="progress-${moduleId}" style="margin-top:0.5rem;">
+                    <div style="display:flex;justify-content:space-between;font-size:0.78rem;margin-bottom:4px;">
+                        <span id="progress-label-${moduleId}" class="muted">Uploading…</span>
+                        <span id="progress-pct-${moduleId}" class="mono muted">0%</span>
+                    </div>
+                    <div style="background:var(--border);border-radius:4px;height:6px;overflow:hidden;">
+                        <div id="progress-bar-${moduleId}" style="height:100%;width:0%;background:var(--accent);border-radius:4px;transition:width 0.2s;"></div>
+                    </div>
+                </div>
+                <div class="upload-error hidden" id="error-${moduleId}" style="color:var(--danger);font-size:0.8rem;margin-top:0.4rem;"></div>
+            `;
+        } else {
+            const data = JSON.parse(xhr.responseText);
+            errorEl.textContent = data.error || 'Upload failed.';
+            errorEl.classList.remove('hidden');
+        }
+    });
+    xhr.addEventListener('error', () => {
+        progressEl.classList.add('hidden');
+        if (zone) zone.style.pointerEvents = '';
+        errorEl.textContent = 'Network error during upload.';
+        errorEl.classList.remove('hidden');
+    });
+    xhr.open('POST', `/instructor/upload-video/${moduleId}`);
+    xhr.send(formData);
+}
+
+function deleteVideo(moduleId) {
+    if (!confirm('Remove this video from the module?')) return;
+    fetch(`/instructor/delete-video/${moduleId}`, { method: 'POST' })
+        .then(r => r.json())
+        .then(data => {
+            if (!data.ok) { alert(data.error || 'Failed to remove.'); return; }
+            const existing = document.getElementById('existing-' + moduleId);
+            if (existing) {
+                existing.outerHTML = `
+                    <div class="upload-zone" id="zone-${moduleId}"
+                         onclick="document.getElementById('file-${moduleId}').click()"
+                         ondragover="event.preventDefault();this.classList.add('drag-over')"
+                         ondragleave="this.classList.remove('drag-over')"
+                         ondrop="event.preventDefault();this.classList.remove('drag-over');uploadVideo('${moduleId}',event.dataTransfer.files[0])">
+                        <svg width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1M12 12V4m0 0L8 8m4-4l4 4"/></svg>
+                        <p style="margin-top:0.5rem;font-weight:500;font-size:0.85rem;">Drop video here or click to browse</p>
+                        <p class="muted" style="font-size:0.75rem;margin-top:0.25rem;">MP4, WebM, MOV, MKV — max 500 MB</p>
+                        <input type="file" id="file-${moduleId}" accept="video/mp4,video/webm,video/quicktime,video/x-matroska" style="display:none;" onchange="uploadVideo('${moduleId}',this)">
+                    </div>
+                `;
+            }
+        });
+}
+</script>
+{% endblock %}

@@ -1,0 +1,153 @@
+{% extends "base.html" %}
+{% block title %}{{ course.title }} — AI Recommended{% endblock %}
+{% block content %}
+
+<a href="{{ url_for('dashboard') }}" class="back">Back to dashboard</a>
+
+<header class="page-head">
+    <div style="max-width: 720px;">
+        <span class="tag" style="background:#eff6ff; border-color:#bfdbfe; color:#1d4ed8; margin-bottom:0.5rem; display:inline-flex;">
+            ★ AI Recommended
+        </span>
+        <h2 style="margin-top: 0.4rem;">{{ course.title }}</h2>
+        <p class="subtitle">{{ course.description }}</p>
+        <div style="margin-top: 0.75rem; display: flex; gap: 1rem; font-size: 0.825rem; color: var(--muted); flex-wrap: wrap;">
+            <span>{{ course.track }}</span>
+            <span>·</span>
+            <span>{{ course.level }}</span>
+            <span>·</span>
+            <span>{{ course.duration_weeks }} weeks</span>
+            <span>·</span>
+            <span>{{ modules|length }} modules</span>
+        </div>
+    </div>
+    <div style="flex-shrink: 0;">
+        {% if is_enrolled %}
+        <a href="{{ url_for('course', course_id=course.id) }}" class="btn-primary lg">Continue learning →</a>
+        {% else %}
+        <form method="POST" action="{{ url_for('enroll', course_id=course.id) }}">
+            <button type="submit" class="btn-primary lg">Enroll in this program</button>
+        </form>
+        {% endif %}
+    </div>
+</header>
+
+{% if rationale %}
+<div style="background: linear-gradient(135deg,#eff6ff,#f5f3ff); border:1px solid #c7d2fe; border-left:4px solid #4f46e5; border-radius: var(--radius); padding: 1.25rem 1.5rem; margin-bottom: 2rem;">
+    <div style="font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; color: #4f46e5; margin-bottom: 0.5rem;">Why AI recommended this for you</div>
+    <p style="font-size: 0.9rem; line-height: 1.65; color: var(--text-2);">{{ rationale }}</p>
+</div>
+{% endif %}
+
+{# ── Course modules with videos ───────────────────────────── #}
+<section>
+    <h3>Course modules</h3>
+    {% for m in modules %}
+    <details style="margin-bottom: 0.75rem; border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; transition: box-shadow 0.2s;"
+             {% if loop.first %}open{% endif %}>
+        <summary style="padding: 1rem 1.25rem; cursor: pointer; display: flex; align-items: center; justify-content: space-between; background: var(--surface); font-weight: 500; font-size: 0.9rem; list-style: none; user-select: none; gap: 1rem;">
+            <span style="display: flex; align-items: center; gap: 0.75rem;">
+                <span style="width:26px; height:26px; border-radius:6px; background:var(--surface-2); border:1px solid var(--border); display:grid; place-items:center; font-size:0.72rem; font-weight:700; font-family:'JetBrains Mono',monospace; flex-shrink:0; color:var(--muted);">
+                    {{ "%02d"|format(m.order) }}
+                </span>
+                {{ m.title }}
+                {% if m.get('video_url') %}
+                <span class="tag" style="font-size: 0.65rem; background: var(--success-bg); border-color: #bbf7d0; color: var(--success);">Video</span>
+                {% endif %}
+            </span>
+            <span class="muted" style="font-size: 0.78rem; flex-shrink: 0;">{{ m.duration_minutes // 60 }}h {{ m.duration_minutes % 60 }}m</span>
+        </summary>
+        <div style="background: var(--surface-2); border-top: 1px solid var(--border);">
+            {% if m.get('video_url') %}
+            <video src="{{ m.video_url }}" controls controlsList="nodownload"
+                   style="width: 100%; max-height: 400px; display: block; background: #000;"></video>
+            {% else %}
+            <div style="padding: 2rem; text-align: center; color: var(--muted); font-size: 0.875rem; background: var(--surface-3);">
+                <div style="font-size: 1.5rem; margin-bottom: 0.5rem;">🎬</div>
+                Video coming soon
+            </div>
+            {% endif %}
+            <div style="padding: 1.25rem;">
+                <p style="font-size: 0.875rem; color: var(--text-2); line-height: 1.65;">{{ m.content }}</p>
+                {% if m.objectives %}
+                <div style="margin-top: 1rem; display: flex; flex-direction: column; gap: 0.35rem;">
+                    {% for o in m.objectives %}
+                    <div style="font-size: 0.8rem; color: var(--muted); display: flex; gap: 0.5rem;">
+                        <span style="color: var(--accent);">→</span> {{ o }}
+                    </div>
+                    {% endfor %}
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </details>
+    {% endfor %}
+</section>
+
+{# ── Enroll CTA ─────────────────────────────────────────────── #}
+{% if not is_enrolled %}
+<div style="background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 2rem; text-align: center; margin-bottom: 2rem;">
+    <h3 style="font-size: 1.1rem; margin-bottom: 0.5rem;">Ready to start?</h3>
+    <p class="muted" style="margin-bottom: 1.25rem; font-size: 0.875rem;">Enroll now to track your progress and take quizzes.</p>
+    <form method="POST" action="{{ url_for('enroll', course_id=course.id) }}">
+        <button type="submit" class="btn-primary lg">Enroll in {{ course.title }}</button>
+    </form>
+</div>
+{% endif %}
+
+{# ── Personal notes ──────────────────────────────────────────── #}
+<section>
+    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem;">
+        <h3 style="margin: 0;">My study notes</h3>
+        <span id="notes-status" style="font-size: 0.78rem; color: var(--muted);"></span>
+    </div>
+    <div style="background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden;">
+        <textarea id="notes-area"
+            placeholder="Write your study notes, key takeaways, questions…"
+            style="width: 100%; min-height: 220px; padding: 1.25rem; border: none; resize: vertical;
+                   font-family: inherit; font-size: 0.875rem; background: transparent; outline: none; line-height: 1.7; color: var(--text);">{{ notes }}</textarea>
+        <div style="padding: 0.6rem 1rem; background: var(--surface-2); border-top: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between;">
+            <span style="font-size: 0.75rem; color: var(--muted);">Notes are saved automatically as you type.</span>
+            <button onclick="saveNotes(true)" class="btn-primary sm">Save now</button>
+        </div>
+    </div>
+</section>
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+const courseId = "{{ course.id }}";
+let saveTimer = null;
+
+function saveNotes(manual = false) {
+    const content = document.getElementById('notes-area').value;
+    const status = document.getElementById('notes-status');
+    status.textContent = 'Saving…';
+    fetch('/notes/save', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ course_id: courseId, content }),
+    })
+    .then(r => r.json())
+    .then(() => {
+        status.textContent = manual ? 'Saved!' : 'Auto-saved';
+        setTimeout(() => { status.textContent = ''; }, 2500);
+    })
+    .catch(() => { status.textContent = 'Save failed'; });
+}
+
+document.getElementById('notes-area').addEventListener('input', () => {
+    clearTimeout(saveTimer);
+    saveTimer = setTimeout(() => saveNotes(), 1500);
+});
+
+// Smooth open/close for details
+document.querySelectorAll('details').forEach(d => {
+    d.addEventListener('toggle', () => {
+        if (d.open) d.style.boxShadow = '0 4px 16px rgba(0,0,0,0.07)';
+        else d.style.boxShadow = '';
+    });
+});
+</script>
+{% endblock %}

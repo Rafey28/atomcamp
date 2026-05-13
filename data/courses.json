@@ -1,0 +1,86 @@
+[
+    {
+        "id": "c_ds",
+        "title": "Data Science Bootcamp",
+        "track": "Data Science",
+        "level": "Beginner to Intermediate",
+        "duration_weeks": 12,
+        "description": "Master the full data science workflow \u2014 Python, statistics, machine learning, and deep learning \u2014 through projects mapped to industry roles.",
+        "outcomes": [
+            "Build production-grade ML pipelines",
+            "Communicate insights to non-technical stakeholders",
+            "Pass technical interviews for analyst and DS roles"
+        ],
+        "instructor_id": "instr01"
+    },
+    {
+        "id": "c_genai",
+        "title": "Generative AI Bootcamp",
+        "track": "AI",
+        "level": "Intermediate",
+        "duration_weeks": 8,
+        "description": "Go from prompt basics to shipping production LLM applications \u2014 RAG, agents, evaluation, and guardrails.",
+        "outcomes": [
+            "Architect retrieval-augmented systems",
+            "Design tool-using agents",
+            "Evaluate LLM apps systematically"
+        ],
+        "instructor_id": "instr01"
+    },
+    {
+        "id": "c_web",
+        "title": "Full-Stack Web Development",
+        "track": "Web Development",
+        "level": "Beginner to Intermediate",
+        "duration_weeks": 14,
+        "description": "Build, deploy, and secure modern web applications using HTML, CSS, JavaScript, Flask, and REST best practices.",
+        "outcomes": [
+            "Ship a deployed full-stack project",
+            "Design REST APIs that don't break",
+            "Implement secure authentication"
+        ],
+        "instructor_id": "instr02"
+    },
+    {
+        "id": "c_dm",
+        "title": "Digital Marketing",
+        "track": "Marketing",
+        "level": "Beginner",
+        "duration_weeks": 10,
+        "description": "Data-driven marketing across SEO, content, paid media, and analytics \u2014 focused on measurable outcomes, not vanity metrics.",
+        "outcomes": [
+            "Run profitable paid campaigns",
+            "Build organic growth engines",
+            "Attribute revenue across channels"
+        ],
+        "instructor_id": "instr02"
+    },
+    {
+        "id": "c_pm",
+        "title": "Product Management",
+        "track": "Product",
+        "level": "Intermediate",
+        "duration_weeks": 10,
+        "description": "Discover, define, and deliver products users love \u2014 frameworks for research, prioritization, metrics, and experimentation.",
+        "outcomes": [
+            "Write rigorous PRDs and acceptance criteria",
+            "Design and read A/B tests",
+            "Align stakeholders around a roadmap"
+        ],
+        "instructor_id": "instr01"
+    },
+    {
+        "id": "c_da",
+        "title": "Data Analytics",
+        "track": "Analytics",
+        "level": "Beginner to Intermediate",
+        "duration_weeks": 10,
+        "description": "From spreadsheets to advanced SQL, BI tools, and storytelling \u2014 the toolkit for translating data into business decisions.",
+        "outcomes": [
+            "Write production-grade SQL",
+            "Build executive dashboards",
+            "Run defensible A/B tests"
+        ],
+        "instructor_id": "instr02"
+    }
+]

@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="auth-card">
+    <h2>Welcome back</h2>
+    <p>Sign in with your email to continue.</p>
+    <form method="POST" class="form">
+        <label>Email
+            <input type="email" name="email" required placeholder="you@example.com" autofocus>
+        </label>
+        <button class="btn-primary lg" type="submit">Continue</button>
+        <p class="muted center tiny">New to atomcamp? <a href="{{ url_for('register') }}" style="color: var(--text); font-weight: 500;">Create an account</a></p>
+        <p class="muted center tiny">Instructor demo: <code>ayesha@atomcamp.com</code></p>
+    </form>
+</div>
+{% endblock %}

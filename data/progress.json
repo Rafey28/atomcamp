@@ -1,0 +1,193 @@
+[
+    {
+        "id": "p01",
+        "user_id": "stu01",
+        "module_id": "m_ds_py",
+        "last_score": 92,
+        "status": "completed",
+        "attempts": 1,
+        "updated_at": "2026-03-10T10:00:00"
+    },
+    {
+        "id": "p02",
+        "user_id": "stu01",
+        "module_id": "m_ds_pandas",
+        "last_score": 88,
+        "status": "completed",
+        "attempts": 1,
+        "updated_at": "2026-03-20T10:00:00"
+    },
+    {
+        "id": "p03",
+        "user_id": "stu01",
+        "module_id": "m_ds_stats",
+        "last_score": 76,
+        "status": "completed",
+        "attempts": 2,
+        "updated_at": "2026-04-15T10:00:00"
+    },
+    {
+        "id": "p04",
+        "user_id": "stu02",
+        "module_id": "m_ai_llm",
+        "last_score": 96,
+        "status": "completed",
+        "attempts": 1,
+        "updated_at": "2026-03-15T10:00:00"
+    },
+    {
+        "id": "p05",
+        "user_id": "stu02",
+        "module_id": "m_ai_prompt",
+        "last_score": 92,
+        "status": "completed",
+        "attempts": 1,
+        "updated_at": "2026-03-25T10:00:00"
+    },
+    {
+        "id": "p06",
+        "user_id": "stu02",
+        "module_id": "m_ai_embed",
+        "last_score": 84,
+        "status": "completed",
+        "attempts": 1,
+        "updated_at": "2026-04-10T10:00:00"
+    },
+    {
+        "id": "p07",
+        "user_id": "stu03",
+        "module_id": "m_web_html",
+        "last_score": 80,
+        "status": "completed",
+        "attempts": 1,
+        "updated_at": "2026-03-20T10:00:00"
+    },
+    {
+        "id": "p08",
+        "user_id": "stu03",
+        "module_id": "m_web_css",
+        "last_score": 40,
+        "status": "needs_review",
+        "attempts": 3,
+        "updated_at": "2026-04-05T10:00:00"
+    },
+    {
+        "id": "p09",
+        "user_id": "stu04",
+        "module_id": "m_dm_intro",
+        "last_score": 84,
+        "status": "completed",
+        "attempts": 1,
+        "updated_at": "2026-03-25T10:00:00"
+    },
+    {
+        "id": "p10",
+        "user_id": "stu04",
+        "module_id": "m_dm_seo",
+        "last_score": 72,
+        "status": "completed",
+        "attempts": 1,
+        "updated_at": "2026-04-10T10:00:00"
+    },
+    {
+        "id": "p11",
+        "user_id": "stu05",
+        "module_id": "m_pm_think",
+        "last_score": 96,
+        "status": "completed",
+        "attempts": 1,
+        "updated_at": "2026-04-01T10:00:00"
+    },
+    {
+        "id": "p12",
+        "user_id": "stu05",
+        "module_id": "m_pm_research",
+        "last_score": 92,
+        "status": "completed",
+        "attempts": 1,
+        "updated_at": "2026-04-12T10:00:00"
+    },
+    {
+        "id": "p13",
+        "user_id": "stu05",
+        "module_id": "m_pm_road",
+        "last_score": 88,
+        "status": "completed",
+        "attempts": 1,
+        "updated_at": "2026-04-25T10:00:00"
+    },
+    {
+        "id": "p14",
+        "user_id": "stu06",
+        "module_id": "m_da_excel",
+        "last_score": 100,
+        "status": "completed",
+        "attempts": 1,
+        "updated_at": "2026-04-01T10:00:00"
+    },
+    {
+        "id": "p15",
+        "user_id": "stu06",
+        "module_id": "m_da_sql1",
+        "last_score": 92,
+        "status": "completed",
+        "attempts": 1,
+        "updated_at": "2026-04-15T10:00:00"
+    },
+    {
+        "id": "p16",
+        "user_id": "stu06",
+        "module_id": "m_da_sql2",
+        "last_score": 84,
+        "status": "completed",
+        "attempts": 1,
+        "updated_at": "2026-05-01T10:00:00"
+    },
+    {
+        "id": "p17",
+        "user_id": "stu07",
+        "module_id": "m_ds_py",
+        "last_score": 48,
+        "status": "needs_review",
+        "attempts": 3,
+        "updated_at": "2026-04-12T10:00:00"
+    },
+    {
+        "id": "p18",
+        "user_id": "stu08",
+        "module_id": "m_ai_llm",
+        "last_score": 76,
+        "status": "completed",
+        "attempts": 2,
+        "updated_at": "2026-04-20T10:00:00"
+    },
+    {
+        "id": "p19",
+        "user_id": "stu08",
+        "module_id": "m_ai_prompt",
+        "last_score": 56,
+        "status": "needs_review",
+        "attempts": 2,
+        "updated_at": "2026-05-08T10:00:00"
+    },
+    {
+        "user_id": "c8c148b1",
+        "module_id": "m_dm_email",
+        "status": "needs_review",
+        "instructor_flagged": true,
+        "last_score": 0,
+        "attempts": 0,
+        "updated_at": "2026-05-13T18:35:12.239576",
+        "id": "205e5952"
+    },
+    {
+        "user_id": "stu03",
+        "module_id": "m_ds_py",
+        "status": "needs_review",
+        "instructor_flagged": true,
+        "last_score": 0,
+        "attempts": 0,
+        "updated_at": "2026-05-13T18:36:45.062351",
+        "id": "f33fce33"
+    }
+]

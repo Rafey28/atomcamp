@@ -1,0 +1,86 @@
+[
+    {
+        "id": "e01",
+        "user_id": "stu01",
+        "course_id": "c_ds",
+        "enrolled_at": "2026-03-01T10:05:00"
+    },
+    {
+        "id": "e02",
+        "user_id": "stu02",
+        "course_id": "c_genai",
+        "enrolled_at": "2026-03-05T11:05:00"
+    },
+    {
+        "id": "e03",
+        "user_id": "stu03",
+        "course_id": "c_web",
+        "enrolled_at": "2026-03-10T09:35:00"
+    },
+    {
+        "id": "e04",
+        "user_id": "stu04",
+        "course_id": "c_dm",
+        "enrolled_at": "2026-03-15T16:05:00"
+    },
+    {
+        "id": "e05",
+        "user_id": "stu05",
+        "course_id": "c_pm",
+        "enrolled_at": "2026-03-20T13:05:00"
+    },
+    {
+        "id": "e06",
+        "user_id": "stu06",
+        "course_id": "c_da",
+        "enrolled_at": "2026-03-25T08:05:00"
+    },
+    {
+        "id": "e07",
+        "user_id": "stu07",
+        "course_id": "c_ds",
+        "enrolled_at": "2026-04-01T12:05:00"
+    },
+    {
+        "id": "e08",
+        "user_id": "stu08",
+        "course_id": "c_genai",
+        "enrolled_at": "2026-04-05T09:05:00"
+    },
+    {
+        "id": "e09",
+        "user_id": "stu02",
+        "course_id": "c_ds",
+        "enrolled_at": "2026-04-10T10:00:00"
+    },
+    {
+        "user_id": "c8c148b1",
+        "course_id": "c_ds",
+        "enrolled_at": "2026-05-13T14:46:15.566877",
+        "id": "6321e5a5"
+    },
+    {
+        "user_id": "stu01",
+        "course_id": "c_genai",
+        "enrolled_at": "2026-05-13T15:11:22.987967",
+        "id": "670f8115"
+    },
+    {
+        "user_id": "90184d56",
+        "course_id": "c_web",
+        "enrolled_at": "2026-05-13T15:35:30.252008",
+        "id": "7f83029a"
+    },
+    {
+        "user_id": "90184d56",
+        "course_id": "c_ds",
+        "enrolled_at": "2026-05-13T15:40:15.027137",
+        "id": "5c7ee8c2"
+    },
+    {
+        "user_id": "stu01",
+        "course_id": "c_dm",
+        "enrolled_at": "2026-05-13T18:09:05.734300",
+        "id": "d85454d9"
+    }
+]
